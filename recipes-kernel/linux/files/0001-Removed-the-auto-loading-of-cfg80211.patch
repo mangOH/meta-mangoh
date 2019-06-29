@@ -1,0 +1,32 @@
+From 31e5b65dba45b7299f7c2ff3cdf86ffcd934e4e2 Mon Sep 17 00:00:00 2001
+From: Zahid Chowdhury <zchowdhury@sierrawireless.com>
+Date: Thu, 20 Jun 2019 16:34:07 -0700
+Subject: [PATCH] Removed the auto-loading of cfg80211
+
+Change-Id: I733f5421e6ac02d07a498503daefc2c6e4ffa294
+---
+ net/wireless/core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/net/wireless/core.c b/net/wireless/core.c
+index 6539d80166ab..c4f999e5d51f 100644
+--- a/net/wireless/core.c
++++ b/net/wireless/core.c
+@@ -34,7 +34,14 @@
+ MODULE_AUTHOR("Johannes Berg");
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("wireless configuration support");
++/* SWI - Removed the auto-loading of cfg80211 based on down-calls
++ * via nl80211 sockets - Rationale: different Wifi driver subsystems
++ * have cfg80211 modules, not just the one built as a loadable module
++ * in the kernel.
++ */
++#if 0
+ MODULE_ALIAS_GENL_FAMILY(NL80211_GENL_NAME);
++#endif
+ 
+ /* RCU-protected (and RTNL for writers) */
+ LIST_HEAD(cfg80211_rdev_list);
+-- 
+2.18.0
+
