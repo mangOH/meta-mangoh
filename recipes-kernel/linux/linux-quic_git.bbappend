@@ -6,7 +6,12 @@ FILESPATH_prepend := "${LINUX_REPO_DIR}/../meta-mangoh/recipes-kernel/linux/file
 # Note that the patches & fragments are not applied to the kernel source
 # or defconfig, rather are applied afterwards.
 SRC_URI_append = " file://0001-Removed-the-auto-loading-of-cfg80211.patch"
+
+# Adding the Framebuffer subsystem and libraries - TODO: delete Frame buffer hardware drivers
 SRC_URI_append = " file://fb.cfg"
+
+# Add the Microchip 251x CAN Controller with SPI Interface
+SRC_URI_append = " file://can.cfg"
 
 # Hack for broken Sierra Yocto builds - if they fix then we can take this out.
 do_configure_append() {
