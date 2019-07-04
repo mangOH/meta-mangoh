@@ -1,0 +1,50 @@
+diff -rNu3 a/etc/group b/etc/group
+--- a/etc/group	2019-07-03 13:41:24.214269176 -0700
++++ b/etc/group	2019-07-04 10:40:10.919135891 -0700
+@@ -34,6 +34,8 @@
+ video:x:44:
+ sasl:x:45:
+ plugdev:x:46:
++netdev:x:47:
++messagebus:x:48:
+ staff:x:50:
+ games:x:60:
+ shutdown:x:70:
+diff -rNu3 a/etc/gshadow b/etc/gshadow
+--- a/etc/gshadow	2019-07-03 13:41:24.214269176 -0700
++++ b/etc/gshadow	2019-07-04 10:40:12.999097382 -0700
+@@ -34,8 +34,10 @@
+ video:*::
+ sasl:*::
+ plugdev:*::
++netdev:*::
++messagebus:*::
+ staff:*::
+ games:*::
+ shutdown:*::
+ users:*::
+-nogroup:*::
+\ No newline at end of file
++nogroup:*::
+diff -rNu3 a/etc/passwd b/etc/passwd
+--- a/etc/passwd	2019-07-03 13:41:24.214269176 -0700
++++ b/etc/passwd	2019-07-04 10:40:25.505532162 -0700
+@@ -15,6 +15,7 @@
+ list:x:38:38:Mailing List Manager:/var/list:/bin/sh
+ irc:x:39:39:ircd:/var/run/ircd:/bin/sh
+ gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/bin/sh
++messagebus:x:42:42:DBus:/var/lib/dbus:/bin/false
+ nobody:x:65534:65534:nobody:/nonexistent:/bin/sh
+ appfwupdateService:*:1000:1000:appfwupdateService:/home/appfwupdateService:/bin/false
+ appsecStore:*:1001:1001:appsecStore:/home/appsecStore:/bin/false
+diff -rNu3 a/etc/shadow b/etc/shadow
+--- a/etc/shadow	2019-07-03 13:41:24.214269176 -0700
++++ b/etc/shadow	2019-07-04 10:40:52.305033428 -0700
+@@ -15,4 +15,5 @@
+ list:*:17154:0:99999:7:::
+ irc:*:17154:0:99999:7:::
+ gnats:*:17154:0:99999:7:::
+-nobody:*:17154:0:99999:7:::
+\ No newline at end of file
++messagebus:*:17154:0:99999:7:::
++nobody:*:17154:0:99999:7:::
