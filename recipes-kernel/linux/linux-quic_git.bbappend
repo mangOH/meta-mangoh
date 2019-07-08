@@ -6,6 +6,7 @@ FILESPATH_prepend := "${LINUX_REPO_DIR}/../meta-mangoh/recipes-kernel/linux/file
 # Note that the patches & fragments are not applied to the kernel source
 # or defconfig, rather are applied afterwards.
 SRC_URI_append = " file://0001-Removed-the-auto-loading-of-cfg80211.patch"
+SRC_URI_append = " file://0001-wm8944-enable-use-with-digital-mic.patch"
 
 # Adding the Framebuffer subsystem and libraries - TODO: delete Frame buffer hardware drivers
 SRC_URI_append = " file://fb.cfg"

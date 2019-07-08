@@ -1,0 +1,189 @@
+From f1befaac82e343da2f4d8abed4f058857ba59dc7 Mon Sep 17 00:00:00 2001
+From: David Frey <dfrey@sierrawireless.com>
+Date: Thu, 27 Jun 2019 11:43:25 -0700
+Subject: [PATCH] wm8944: enable use with digital mic
+
+Expose the controls that are necessary to use a digital microphone
+attached to a wm8944 audio codec.
+
+Change-Id: I57c873c9516d9967ed3bcbb79f1d237f63b95eeb
+Signed-off-by: David Frey <dfrey@sierrawireless.com>
+---
+ include/linux/mfd/wm8944/registers.h | 80 +++++++++++++++++++++++++---
+ sound/soc/codecs/wm8944.c            | 32 ++++++++++-
+ 2 files changed, 103 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/mfd/wm8944/registers.h b/include/linux/mfd/wm8944/registers.h
+index de4c53acd784..f9d8a02db6f2 100644
+--- a/include/linux/mfd/wm8944/registers.h
++++ b/include/linux/mfd/wm8944/registers.h
+@@ -243,6 +243,11 @@
+ #define WM8944_ADCL_ENA_SHIFT                       10  /* ADCL_ENA */
+ #define WM8944_ADCL_ENA_WIDTH                        1  /* ADCL_ENA */
+ 
++#define WM8944_DMIC_ENA                         0x0080  /* DMIC_ENA */
++#define WM8944_DMIC_ENA_MASK                    0x0080  /* DMIC_ENA */
++#define WM8944_DMIC_ENA_SHIFT                        7  /* DMIC_ENA */
++#define WM8944_DMIC_ENA_WIDTH                        1  /* DMIC_ENA */
++
+ #define WM8944_MICB_ENA                         0x0010  /* MICB_ENA */
+ #define WM8944_MICB_ENA_MASK                    0x0010  /* MICB_ENA */
+ #define WM8944_MICB_ENA_SHIFT                        4  /* MICB_ENA */
+@@ -394,23 +399,82 @@
+ #define WM8944_VMID_ENA_SHIFT                        4  /* VMID_ENA */
+ #define WM8944_VMID_ENA_WIDTH                        1  /* VMID_ENA */
+ 
++/*
++ * R11 (0xB) - GPIO Config
++ */
++
++#define WM8944_GPCFG_MODE_GP2                   0x0001  /* MODE_GP2 */
++#define WM8944_GPCFG_MODE_GP2_MASK              0x0001  /* MODE_GP2 */
++#define WM8944_GPCFG_MODE_GP2_SHIFT                  0  /* MODE_GP2 */
++#define WM8944_GPCFG_MODE_GP2_WIDTH                  1  /* MODE_GP2 */
++
+ /*
+  * R13 (0xD) - GPIO1 control
+  */
+ 
+-#define WM8944_GP1_PU                           0x6000  /* GP1_PU */
+-#define WM8944_GP1_PU_MASK                      0x6000  /* GP1_PU */
+-#define WM8944_GP1_PU_SHIFT                         13  /* GP1_PU */
+-#define WM8944_GP1_PU_WIDTH                          2  /* GP1_PU */
++#define WM8944_GP1_DIR                          0x8000  /* GP1_DIR */
++#define WM8944_GP1_DIR_MASK                     0x8000  /* GP1_DIR */
++#define WM8944_GP1_DIR_SHIFT                        15  /* GP1_DIR */
++#define WM8944_GP1_DIR_WIDTH                         1  /* GP1_DIR */
++
++#define WM8944_GP1_PULL                         0x6000  /* GP1_PULL */
++#define WM8944_GP1_PULL_MASK                    0x6000  /* GP1_PULL */
++#define WM8944_GP1_PULL_SHIFT                       13  /* GP1_PULL */
++#define WM8944_GP1_PULL_WIDTH                        2  /* GP1_PULL */
++
++#define WM8944_GP1_INT_MODE                     0x1000  /* GP1_INT_MODE */
++#define WM8944_GP1_INT_MODE_MASK                0x1000  /* GP1_INT_MODE */
++#define WM8944_GP1_INT_MODE_SHIFT                   12  /* GP1_INT_MODE */
++#define WM8944_GP1_INT_MODE_WIDTH                    1  /* GP1_INT_MODE */
++
++#define WM8944_GP1_POL                          0x0400  /* GP1_POL */
++#define WM8944_GP1_POL_MASK                     0x0400  /* GP1_POL */
++#define WM8944_GP1_POL_SHIFT                        10  /* GP1_POL */
++#define WM8944_GP1_POL_WIDTH                         1  /* GP1_POL */
++
++#define WM8944_GP1_LVL                          0x0020  /* GP1_LVL */
++#define WM8944_GP1_LVL_MASK                     0x0020  /* GP1_LVL */
++#define WM8944_GP1_LVL_SHIFT                         5  /* GP1_LVL */
++#define WM8944_GP1_LVL_WIDTH                         1  /* GP1_LVL */
++
++#define WM8944_GP1_FN                           0x000F  /* GP1_FN */
++#define WM8944_GP1_FN_MASK                      0x000F  /* GP1_FN */
++#define WM8944_GP1_FN_SHIFT                          0  /* GP1_FN */
++#define WM8944_GP1_FN_WIDTH                          4  /* GP1_FN */
+ 
+ /*
+  * R14 (0xE) - GPIO2 control
+  */
+ 
+-#define WM8944_GP2_PU                           0x6000  /* GP2_PU */
+-#define WM8944_GP2_PU_MASK                      0x6000  /* GP2_PU */
+-#define WM8944_GP2_PU_SHIFT                         13  /* GP2_PU */
+-#define WM8944_GP2_PU_WIDTH                          2  /* GP2_PU */
++#define WM8944_GP2_DIR                          0x8000  /* GP2_DIR */
++#define WM8944_GP2_DIR_MASK                     0x8000  /* GP2_DIR */
++#define WM8944_GP2_DIR_SHIFT                        15  /* GP2_DIR */
++#define WM8944_GP2_DIR_WIDTH                         1  /* GP2_DIR */
++
++#define WM8944_GP2_PULL                         0x6000  /* GP2_PULL */
++#define WM8944_GP2_PULL_MASK                    0x6000  /* GP2_PULL */
++#define WM8944_GP2_PULL_SHIFT                       13  /* GP2_PULL */
++#define WM8944_GP2_PULL_WIDTH                        2  /* GP2_PULL */
++
++#define WM8944_GP2_INT_MODE                     0x1000  /* GP2_INT_MODE */
++#define WM8944_GP2_INT_MODE_MASK                0x1000  /* GP2_INT_MODE */
++#define WM8944_GP2_INT_MODE_SHIFT                   12  /* GP2_INT_MODE */
++#define WM8944_GP2_INT_MODE_WIDTH                    1  /* GP2_INT_MODE */
++
++#define WM8944_GP2_POL                          0x0400  /* GP2_POL */
++#define WM8944_GP2_POL_MASK                     0x0400  /* GP2_POL */
++#define WM8944_GP2_POL_SHIFT                        10  /* GP2_POL */
++#define WM8944_GP2_POL_WIDTH                         1  /* GP2_POL */
++
++#define WM8944_GP2_LVL                          0x0020  /* GP2_LVL */
++#define WM8944_GP2_LVL_MASK                     0x0020  /* GP2_LVL */
++#define WM8944_GP2_LVL_SHIFT                         5  /* GP2_LVL */
++#define WM8944_GP2_LVL_WIDTH                         1  /* GP2_LVL */
++
++#define WM8944_GP2_FN                           0x000F  /* GP2_FN */
++#define WM8944_GP2_FN_MASK                      0x000F  /* GP2_FN */
++#define WM8944_GP2_FN_SHIFT                          0  /* GP2_FN */
++#define WM8944_GP2_FN_WIDTH                          4  /* GP2_FN */
+ 
+ /*
+  * R16 (0x10) - Interrupt Status 1
+diff --git a/sound/soc/codecs/wm8944.c b/sound/soc/codecs/wm8944.c
+index c962afb4bd8e..da6aa0e84828 100644
+--- a/sound/soc/codecs/wm8944.c
++++ b/sound/soc/codecs/wm8944.c
+@@ -26,7 +26,6 @@
+  * FLL
+  * No use made of gpio
+  * L/HPF, 3D Surround, notch filter, re-tune EQ, DRC
+- * digital mic
+  * Soft Start
+  * jack detection
+  * video buffer
+@@ -109,6 +108,31 @@ static const char *wm8944_audio_intf_word_length_text[] = {"16 bits", "20 bits",
+ static const struct soc_enum wm8944_audio_intf_word_length_enum
+ = SOC_ENUM_SINGLE(WM8944_IFACE, 2, 4, wm8944_audio_intf_word_length_text);
+ 
++static const char *wm8944_gpio_fn_text[] = {
++	[0]  = "Logic Level Input",
++	[1]  = "Edge Detection Input",
++	[2]  = "CLKOUT output",
++	[3]  = "Interupt (IRQ) output",
++	[4]  = "Reserved",
++	[5]  = "Reserved",
++	[6]  = "Reserved",
++	[7]  = "Temperature flag output",
++	[8]  = "Reserved",
++	[9]  = "DMICCLK output",
++	[10] = "Logic Level output",
++	[11] = "LDO_UV output",
++	[12] = "Reserved",
++	[13] = "Reserved",
++	[14] = "Reserved",
++	[15] = "Reserved",
++};
++static const struct soc_enum wm8944_gpio1_fn_enum = SOC_ENUM_SINGLE(
++	WM8944_GPIO1CTL, WM8944_GP1_FN_SHIFT, ARRAY_SIZE(wm8944_gpio_fn_text),
++	wm8944_gpio_fn_text);
++static const struct soc_enum wm8944_gpio2_fn_enum = SOC_ENUM_SINGLE(
++	WM8944_GPIO2CTL, WM8944_GP2_FN_SHIFT, ARRAY_SIZE(wm8944_gpio_fn_text),
++	wm8944_gpio_fn_text);
++
+ static DECLARE_TLV_DB_SCALE(WM8944_spk_vol_tlv, -5700, 100, 0); //min = -57 dB , step = 1 dB, , mute = 0
+ static DECLARE_TLV_DB_SCALE(WM8944_inpga_vol_tlv, -1200, 75, 0);  //min = -12 dB , step = 0.75 dB, , mute = 0
+ 
+@@ -220,6 +244,8 @@ static const struct snd_kcontrol_new wm8944_snd_controls[] = {
+ 		   WM8944_VMID_BUF_ENA_SHIFT, 1, 0),
+ 	SOC_SINGLE("Left ADC Enable Switch", WM8944_POWER1,
+ 		   WM8944_ADCL_ENA_SHIFT, 1, 0),
++	SOC_SINGLE("Digital Microphone Enable Switch", WM8944_POWER1,
++		   WM8944_DMIC_ENA_SHIFT, 1, 0),
+ 
+ 	SOC_SINGLE("SPKOUTP VDD Enable Switch", WM8944_POWER2,
+ 		   WM8944_SPKP_SPKVDD_ENA_SHIFT, 1, 0),
+@@ -258,6 +284,10 @@ static const struct snd_kcontrol_new wm8944_snd_controls[] = {
+ 
+ 	//
+ 	SOC_SINGLE("ZC Timeout Clock Switch", WM8944_ADDCNTRL, 0, 1, 0),
++
++	SOC_ENUM("GPIO1 Pin Function", wm8944_gpio1_fn_enum),
++	SOC_ENUM("GPIO2 Pin Function", wm8944_gpio2_fn_enum),
++
+ 	//
+ 	SOC_SINGLE("BYP to Speak PGA Switch", WM8944_SPEAKMIXCTL1, 6, 1, 0),
+ 
+-- 
+2.22.0
+
