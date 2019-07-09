@@ -1,6 +1,6 @@
 # Hack for broken FILESEXTRAPATHS_prepend being nuked by Sierra Yocto code - if they fix
 # change FILESPATH_prepend to the proper FILESEXTRAPATHS_prepend as required by append scripts.
-FILESPATH_prepend := "${LINUX_REPO_DIR}/../meta-mangoh/recipes-kernel/linux/files:"
+FILESPATH_append := ":${THISDIR}/files:"
 
 # Please add all your kernel patches and config fragments below.
 # Note that the patches & fragments are not applied to the kernel source
