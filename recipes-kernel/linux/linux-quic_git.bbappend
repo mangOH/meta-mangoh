@@ -1,5 +1,6 @@
 # Hack for broken FILESEXTRAPATHS_prepend being nuked by Sierra Yocto code - if they fix
-# change FILESPATH_prepend to the proper FILESEXTRAPATHS_prepend as required by append scripts.
+# change FILESPATH_append to the proper FILESEXTRAPATHS_prepend/append as required by
+# prepend/append scripts.
 FILESPATH_append := ":${THISDIR}/files:"
 
 # Please add all your kernel patches and config fragments below.
