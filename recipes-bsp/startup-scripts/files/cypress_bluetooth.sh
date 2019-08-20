@@ -13,8 +13,8 @@ attach_cypress_bt()
 # this has to be customized for each bluetooth Legato app.
 sensortag_smack_workaround()
 {
-    echo "_ app.bluetoothSensorTag -w----" > /sys/fs/smackfs/load2
-    echo "app.bluetoothSensorTag _ -w----" > /sys/fs/smackfs/load2
+    echo "_ app.bluetoothSensorTag rwx---" > /sys/fs/smackfs/load2
+    echo "app.bluetoothSensorTag _ rwx---" > /sys/fs/smackfs/load2
 }
 
 do_start()
