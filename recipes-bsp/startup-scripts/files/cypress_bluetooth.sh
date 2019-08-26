@@ -1,10 +1,5 @@
 #!/bin/sh
 
-attach_cypress_bt()
-{
-    btattach -P h4 -B /dev/ttyUSB0 &
-}
-
 # bluetoothSensorTag needs to be able to open a socket to dbus-daemon and vice
 # versa. Since dbus-daemon runs under smack label "_" it's necessary to allow
 # all processes running with label _ to access the bluetoothSensorTag
@@ -19,7 +14,6 @@ sensortag_smack_workaround()
 
 do_start()
 {
-    attach_cypress_bt
     sensortag_smack_workaround
 }
 
