@@ -1,0 +1,82 @@
+From 76b69fe765c2c7f2c8f1ebeac4d7290fb6d08db4 Mon Sep 17 00:00:00 2001
+From: Zahid Chowdhury <zchowdhury@sierrawireless.com>
+Date: Wed, 28 Aug 2019 09:47:54 -0700
+Subject: [PATCH] Allowing sdhci_msm to compile as a loadable module
+
+Change-Id: Ia9878973e0de413f44c008924c5b9b696c39a2fc
+---
+ drivers/mmc/core/host.c      |  3 +++
+ drivers/mmc/host/sdhci-msm.c | 17 +++++++++++++++++
+ 2 files changed, 20 insertions(+)
+
+diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+index ccaffd2b7ebd..9c0b4511cf25 100644
+--- a/drivers/mmc/core/host.c
++++ b/drivers/mmc/core/host.c
+@@ -206,6 +206,9 @@ bool mmc_host_may_gate_card(struct mmc_card *card)
+ 	return !(card->quirks & MMC_QUIRK_BROKEN_CLK_GATING);
+ }
+ 
++/* SWI - added to allow sdhci-msm to become a loadable module */
++EXPORT_SYMBOL(mmc_host_may_gate_card);
++
+ /**
+  *	mmc_host_clk_release - gate off hardware MCI clocks
+  *	@host: host to gate.
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index 8a2e27870d8d..8a3f6d91f699 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -3908,6 +3908,11 @@ static void sdhci_msm_cmdq_init(struct sdhci_host *host,
+ }
+ #endif
+ 
++/* SWI - making sdhci_msm into a a loadable module requires probe eMMC as a boot
++ * device to be commented out and then this routine becomes unused and gcc
++ * complains.
++ */
++#if 0
+ static bool sdhci_msm_is_bootdevice(struct device *dev)
+ {
+ 	if (strnstr(saved_command_line, "androidboot.bootdevice=",
+@@ -3929,6 +3934,7 @@ static bool sdhci_msm_is_bootdevice(struct device *dev)
+ 	 */
+ 	return true;
+ }
++#endif
+ 
+ static int sdhci_msm_probe(struct platform_device *pdev)
+ {
+@@ -3997,11 +4003,16 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+ 			goto pltfm_free;
+ 		}
+ 
++		/* SWI - making sdhci_msm into a a loadable module requires eMMC
++		 * probe to skipped.
++		 */
++#if 0
+ 		/* skip the probe if eMMC isn't a boot device */
+ 		if ((ret == 1) && !sdhci_msm_is_bootdevice(&pdev->dev)) {
+ 			ret = -ENODEV;
+ 			goto pltfm_free;
+ 		}
++#endif
+ 
+ 		if (disable_slots & (1 << (ret - 1))) {
+ 			dev_info(&pdev->dev, "%s: Slot %d disabled\n", __func__,
+@@ -4450,6 +4461,12 @@ static int sdhci_msm_remove(struct platform_device *pdev)
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	struct sdhci_msm_host *msm_host = pltfm_host->priv;
+ 	struct sdhci_msm_pltfm_data *pdata = msm_host->pdata;
++
++	/* TODO: Fix. SWI making sdhci_msm into a a loadable module that does
++	 * not crash on modprobe -r requires loadable module access to certain
++	 * registers to not crash, currently, on remove some race condition
++	 * to crash the module on register access exists as below on readl.
++	 */
+ 	int dead = (readl_relaxed(host->ioaddr + SDHCI_INT_STATUS) ==
+ 			0xffffffff);
+ 
+-- 
+2.18.0
+
