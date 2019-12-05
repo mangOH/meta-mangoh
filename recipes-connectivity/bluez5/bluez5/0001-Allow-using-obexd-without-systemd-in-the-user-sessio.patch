@@ -41,23 +41,16 @@ index de59d297b..73004a39c 100644
  
  if OBEX
  
-diff --git a/obexd/src/org.bluez.obex.service b/obexd/src/org.bluez.obex.service
-deleted file mode 100644
-index a53808884..000000000
+diff --git a/obexd/src/org.bluez.obex.service b/obexd/src/org.bluez.obex.service.in
+similarity index 76%
+rename from obexd/src/org.bluez.obex.service
+rename to obexd/src/org.bluez.obex.service.in
+index a53808884..9c815f246 100644
 --- a/obexd/src/org.bluez.obex.service
-+++ /dev/null
-@@ -1,4 +0,0 @@
--[D-BUS Service]
--Name=org.bluez.obex
--Exec=/bin/false
--SystemdService=dbus-org.bluez.obex.service
-diff --git a/obexd/src/org.bluez.obex.service.in b/obexd/src/org.bluez.obex.service.in
-new file mode 100644
-index 000000000..9c815f246
---- /dev/null
 +++ b/obexd/src/org.bluez.obex.service.in
-@@ -0,0 +1,4 @@
-+[D-BUS Service]
-+Name=org.bluez.obex
+@@ -1,4 +1,4 @@
+ [D-BUS Service]
+ Name=org.bluez.obex
+-Exec=/bin/false
 +Exec=@libexecdir@/obexd
-+SystemdService=dbus-org.bluez.obex.service
+ SystemdService=dbus-org.bluez.obex.service
