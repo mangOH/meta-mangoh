@@ -19,6 +19,8 @@ SRC_URI_append = " file://can.cfg"
 # Make the Qcom MSM-SDHCI module as loadable - TODO: rmmod fails
 SRC_URI_append = " file://loadable_sdhci_msm.cfg"
 
+# Bluetooth backport
+SRC_URI_append = " file://disable_old_bluetooth.cfg"
 SRC_URI_append = " file://bluetooth_for_backports.cfg"
 
 # Hack for broken Sierra Yocto builds - if they fix then we can take this out.
