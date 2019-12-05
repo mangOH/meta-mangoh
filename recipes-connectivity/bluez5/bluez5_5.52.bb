@@ -33,6 +33,10 @@ NOINST_TOOLS_TESTING ?= " \
     tools/userchan-tester \
 "
 
+# BlueZ 5.51 adds a new option to put the ell sources as a subdirectory of bluez
+# when building. We don't use that.
+EXTRA_OECONF += "--enable-external-ell"
+
 # noinst programs in Makefile.tools that are conditional on TOOLS
 # support
 NOINST_TOOLS_BT ?= " \
