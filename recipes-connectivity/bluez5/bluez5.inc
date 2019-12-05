@@ -48,17 +48,11 @@ PACKAGECONFIG[udev] = "--enable-udev,--disable-udev,udev"
 
 SRC_URI = "\
     ${KERNELORG_MIRROR}/linux/bluetooth/bluez-${PV}.tar.xz \
-    file://out-of-tree.patch \
     file://init \
     file://run-ptest \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '', 'file://0001-Allow-using-obexd-without-systemd-in-the-user-sessio.patch', d)} \
     file://0001-tests-add-a-target-for-building-tests-without-runnin.patch \
     file://0001-test-gatt-Fix-hung-issue.patch \
-    file://0001-Makefile.am-Fix-a-race-issue-for-tools.patch \
-    file://CVE-2018-10910.patch \
-    file://gcc9-fixes.patch \
-    file://0001-tools-Fix-build-after-y2038-changes-in-glibc.patch \
-    file://0001-tools-btpclient.c-include-signal.h.patch \
 "
 S = "${WORKDIR}/bluez-${PV}"
 
