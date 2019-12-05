@@ -1,0 +1,45 @@
+From 59401992a1e8bd4d09874ff8b7fd096a7405b965 Mon Sep 17 00:00:00 2001
+From: David Frey <dfrey@sierrawireless.com>
+Date: Fri, 15 Nov 2019 11:08:11 -0800
+Subject: [PATCH 2/4] backport crypto_alg_extsize() in support of kpp
+
+Change-Id: I700a3fb00e8edb2db83efb2b57134b79bc42fbe7
+---
+ crypto/algapi.c   | 7 +++++++
+ crypto/internal.h | 2 ++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index bfa509412ed..e0a034b7222 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -979,6 +979,13 @@ void crypto_xor(u8 *dst, const u8 *src, unsigned int size)
+ }
+ EXPORT_SYMBOL_GPL(crypto_xor);
+ 
++unsigned int crypto_alg_extsize(struct crypto_alg *alg)
++{
++	return alg->cra_ctxsize +
++		(alg->cra_alignmask & ~(crypto_tfm_ctx_alignment() - 1));
++}
++EXPORT_SYMBOL_GPL(crypto_alg_extsize);
++
+ static int __init crypto_algapi_init(void)
+ {
+ 	crypto_init_proc();
+diff --git a/crypto/internal.h b/crypto/internal.h
+index bd39bfc92ea..ed7a70c6dbc 100644
+--- a/crypto/internal.h
++++ b/crypto/internal.h
+@@ -103,6 +103,8 @@ int crypto_register_notifier(struct notifier_block *nb);
+ int crypto_unregister_notifier(struct notifier_block *nb);
+ int crypto_probing_notify(unsigned long val, void *v);
+ 
++unsigned int crypto_alg_extsize(struct crypto_alg *alg);
++
+ static inline struct crypto_alg *crypto_alg_get(struct crypto_alg *alg)
+ {
+ 	atomic_inc(&alg->cra_refcnt);
+-- 
+2.24.0
+

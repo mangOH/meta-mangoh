@@ -1,0 +1,41 @@
+From f82dfc16c8cc00861455fce4837366955ce254d5 Mon Sep 17 00:00:00 2001
+From: David Frey <dfrey@sierrawireless.com>
+Date: Fri, 15 Nov 2019 16:28:01 -0800
+Subject: [PATCH 3/4] define CRYPTO_ALG_TYPE_KPP
+
+Change-Id: I9e5fdd54d83b9de25358ba27f8a2d4fae8b0d075
+---
+ crypto/crypto_user.c   | 4 ++++
+ include/linux/crypto.h | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/crypto/crypto_user.c b/crypto/crypto_user.c
+index c571d85cfad..5526ffcc52e 100644
+--- a/crypto/crypto_user.c
++++ b/crypto/crypto_user.c
+@@ -150,6 +150,10 @@ static int crypto_report_one(struct crypto_alg *alg,
+ 			goto nla_put_failure;
+ 
+ 		break;
++	case CRYPTO_ALG_TYPE_KPP:
++		if (crypto_report_kpp(skb, alg))
++			goto nla_put_failure;
++		break;
+ 	}
+ 
+ out:
+diff --git a/include/linux/crypto.h b/include/linux/crypto.h
+index dc34dfc766b..487679c53b2 100644
+--- a/include/linux/crypto.h
++++ b/include/linux/crypto.h
+@@ -48,6 +48,7 @@
+ #define CRYPTO_ALG_TYPE_BLKCIPHER	0x00000004
+ #define CRYPTO_ALG_TYPE_ABLKCIPHER	0x00000005
+ #define CRYPTO_ALG_TYPE_GIVCIPHER	0x00000006
++#define CRYPTO_ALG_TYPE_KPP		0x00000007
+ #define CRYPTO_ALG_TYPE_DIGEST		0x00000008
+ #define CRYPTO_ALG_TYPE_HASH		0x00000008
+ #define CRYPTO_ALG_TYPE_SHASH		0x00000009
+-- 
+2.24.0
+

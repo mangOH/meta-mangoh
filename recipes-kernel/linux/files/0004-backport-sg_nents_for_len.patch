@@ -1,0 +1,64 @@
+From 2e61453f1c0ff23022d3f3145997415e68d32396 Mon Sep 17 00:00:00 2001
+From: David Frey <dfrey@sierrawireless.com>
+Date: Fri, 15 Nov 2019 20:10:38 -0800
+Subject: [PATCH 4/4] backport sg_nents_for_len()
+
+This is in support of backported bluetooth
+---
+ crypto/ecdh.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
+
+diff --git a/crypto/ecdh.c b/crypto/ecdh.c
+index bf6300175b9..fbee9a74e9a 100644
+--- a/crypto/ecdh.c
++++ b/crypto/ecdh.c
+@@ -66,6 +66,28 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
+ 	return 0;
+ }
+ 
++/*
++ * Copied "sg_nents_for_len" from v4.19.84 since it's required for
++ * edch_compute_value below.
++ */
++static int bp_sg_nents_for_len(struct scatterlist *sg, u64 len)
++{
++	int nents;
++	u64 total;
++
++	if (!len)
++		return 0;
++
++	for (nents = 0, total = 0; sg; sg = sg_next(sg)) {
++		nents++;
++		total += sg->length;
++		if (total >= len)
++			return nents;
++	}
++
++	return -EINVAL;
++}
++
+ static int ecdh_compute_value(struct kpp_request *req)
+ {
+ 	struct crypto_kpp *tfm = crypto_kpp_reqtfm(req);
+@@ -97,7 +119,7 @@ static int ecdh_compute_value(struct kpp_request *req)
+ 			goto free_all;
+ 
+ 		copied = sg_copy_to_buffer(req->src,
+-					   sg_nents_for_len(req->src,
++					   bp_sg_nents_for_len(req->src,
+ 							    public_key_sz),
+ 					   public_key, public_key_sz);
+ 		if (copied != public_key_sz)
+@@ -120,7 +142,7 @@ static int ecdh_compute_value(struct kpp_request *req)
+ 
+ 	/* might want less than we've got */
+ 	nbytes = min_t(size_t, nbytes, req->dst_len);
+-	copied = sg_copy_from_buffer(req->dst, sg_nents_for_len(req->dst,
++	copied = sg_copy_from_buffer(req->dst, bp_sg_nents_for_len(req->dst,
+ 								nbytes),
+ 				     buf, nbytes);
+ 	if (copied != nbytes)
+-- 
+2.24.0
+

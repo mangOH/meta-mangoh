@@ -21,7 +21,12 @@ SRC_URI_append = " file://loadable_sdhci_msm.cfg"
 
 # Bluetooth backport
 SRC_URI_append = " file://disable_old_bluetooth.cfg"
+SRC_URI_append = " file://0001-crypto-add-crypto-required-to-backport-BT-from-4.19.patch"
+SRC_URI_append = " file://0002-backport-crypto_alg_extsize-in-support-of-kpp.patch"
+SRC_URI_append = " file://0003-define-CRYPTO_ALG_TYPE_KPP.patch"
+SRC_URI_append = " file://0004-backport-sg_nents_for_len.patch"
 SRC_URI_append = " file://bluetooth_for_backports.cfg"
+
 
 # Hack for broken Sierra Yocto builds - if they fix then we can take this out.
 do_configure_append() {
