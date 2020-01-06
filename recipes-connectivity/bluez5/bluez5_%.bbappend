@@ -1,3 +1,10 @@
+# This is a workaround for a problem where the files associated with bluez5_5.50.bb are mixed into a
+# directory which also contains the files associated with bluez5_%.bbappend in meta-swi. This causes
+# the 5.50 files to be picked up by accident when building 5.52. The problem is being fixed upstream
+# in meta-swi, but we are still affected until we build against a version of meta-swi that contains
+# the fix.
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+
 # Start/stop bluez in rcS.d because that's the only runlevel that busybox supports
 INITSCRIPT_PARAMS = "start 21 S . stop 79 S ."
 
