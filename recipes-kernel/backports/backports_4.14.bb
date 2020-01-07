@@ -10,7 +10,7 @@ PV = "4.14-rc2-1"
 inherit module-base
 
 
-SRCREV = "747785466fb011dd029654a4933c9b5257f9cca5"
+SRCREV = "ec72e1b1bb3f096bce9fa6060183db26f8352933"
 SRC_URI = " \
     git://github.com/mangOH/linux-backports-generated.git \
     file://backports_config \
