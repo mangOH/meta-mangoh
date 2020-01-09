@@ -9,6 +9,13 @@ PV = "4.14-rc2-1"
 #inherit module
 inherit module-base
 
+# To generate the backports tree yourself, so you can make modifications:
+# Generate the backport tree using:
+#    https://github.com/mangOH/linux-backports-generated/blob/master/README.md
+# git init, add/commit the generated tree
+# Change SRCREV = to point to your generated tree
+# Under SRC_URI point this at your generated tree as such:
+#    git:///home/user/linux-backports-generated;protocol=file \
 
 SRCREV = "ec72e1b1bb3f096bce9fa6060183db26f8352933"
 SRC_URI = " \
