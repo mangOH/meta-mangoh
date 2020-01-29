@@ -15,7 +15,7 @@ inherit module-base
 # git init, add/commit the generated tree
 # Change SRCREV = to point to your generated tree
 # Under SRC_URI point this at your generated tree as such:
-#    git:///home/user/linux-backports-generated;protocol=file \
+#    git:///home/user/linux-backports-generated;protocol=file
 
 SRCREV = "ec72e1b1bb3f096bce9fa6060183db26f8352933"
 SRC_URI = " \
