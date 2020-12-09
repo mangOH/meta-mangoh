@@ -54,7 +54,16 @@ cy_wifi_start() {
     fi
 
     # load the drivers
-    modprobe brcmfmac
+    #modprobe brcmfmac
+    # HACK: For some reason, the modules.dep is messed up and this means that brcmfmac
+    # depends on the cfg80211 from the stock kernel and this doesn't have all of
+    # the symbols that brcmfmac requires. Instead of fixing the modules.dep, just
+    # manually load the correct modules.
+    KERNEL_VER=`uname -r`
+    insmod /lib/modules/${KERNEL_VER}/backports/compat.ko
+    insmod /lib/modules/${KERNEL_VER}/backports/cfg80211.ko
+    insmod /lib/modules/${KERNEL_VER}/backports/brcmutil.ko
+    insmod /lib/modules/${KERNEL_VER}/backports/brcmfmac.ko
 
     # firmware loads and reboots the Cypress device
     sleep 5
